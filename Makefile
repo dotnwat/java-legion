@@ -18,13 +18,13 @@ NATIVE_JAVA_CLASSES = \
 NATIVE_INCLUDE = ./include
 
 OUTFILE		:= liblegion_jni.so
-GEN_SRC		:= runtime.cc
+GEN_SRC		:= native/runtime.cc
 GEN_GPU_SRC	:=
 
 CC_FLAGS	:= -fPIC
 NVCC_FLAGS	:=
 GASNET_FLAGS	:=
-INC_FLAGS    := -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/linux
+INC_FLAGS    := -I. -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/linux
 LD_FLAGS := -shared
 
 ###########################################################################
