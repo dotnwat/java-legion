@@ -17,7 +17,7 @@ NATIVE_JAVA_CLASSES = \
 
 NATIVE_INCLUDE = ./include
 
-OUTFILE		:= liblegion_jni.so
+OUTFILE		:= target/liblegion_jni.so
 GEN_SRC		:= native/runtime.cc
 GEN_GPU_SRC	:=
 
@@ -117,13 +117,19 @@ clean:
 ARCH := $(shell getconf LONG_BIT)
 LEGION_JAR = legionjni-linux$(ARCH).jar
 
-java:
-	javac org/legion/*.java
-	javah -d $(NATIVE_INCLUDE) -jni $(NATIVE_JAVA_CLASSES)
+MAIN_SRC = src/main/java
+OUTPUT = target
+MAIN_CLASSES = $(OUTPUT)/classes
 
-jar: all
-	jar -cf $(LEGION_JAR) org/legion/*.class liblegion_jni.so
+java:
+	mkdir -p $(MAIN_CLASSES)
+	javac -d $(MAIN_CLASSES) $(MAIN_SRC)/org/legion/*.java
+	javah -cp $(MAIN_CLASSES) -d $(NATIVE_INCLUDE) -jni $(NATIVE_JAVA_CLASSES)
+
+jar: java all
+	cd target;jar -cf $(LEGION_JAR) liblegion_jni.so
+	cd target/classes;jar -uf ../$(LEGION_JAR) org/legion/*.class
 
 hello: jar
-	javac -cp $(LEGION_JAR) LegionHelloWorld.java
-	java -cp $(LEGION_JAR):. -Xcheck:jni LegionHelloWorld
+	javac -cp target/$(LEGION_JAR) LegionHelloWorld.java
+	java -cp target/$(LEGION_JAR):. -Xcheck:jni LegionHelloWorld
