@@ -1,5 +1,11 @@
 # java-legion - Java bindings to Legion
 
+# Examples
+
+* [Hello World](#hello-world)
+
+## Hello World
+
 This is your basic *hello world* example. It prints out the iconic message in the top-level task.
 
 ```java
