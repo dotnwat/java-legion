@@ -52,6 +52,7 @@ public class Runtime {
 
     Context ctx = new Context(ctxp);
     Runtime rt = new Runtime(rtp);
+    Task t = new Task(taskp);
 
     TaskFunction func;
     synchronized(Runtime.class) {
@@ -61,7 +62,7 @@ public class Runtime {
     if (func == null)
       throw new NullPointerException();
 
-    func.task(ctx, rt);
+    func.task(t, ctx, rt);
   }
 
   /**
@@ -72,6 +73,7 @@ public class Runtime {
 
     Context ctx = new Context(ctxp);
     Runtime rt = new Runtime(rtp);
+    Task t = new Task(taskp);
 
     TaskFunction func;
     synchronized(Runtime.class) {
@@ -81,7 +83,7 @@ public class Runtime {
     if (func == null)
       throw new NullPointerException();
 
-    func.task(ctx, rt);
+    func.task(t, ctx, rt);
   }
 
   /**

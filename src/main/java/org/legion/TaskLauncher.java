@@ -2,6 +2,11 @@ package org.legion;
 
 public class TaskLauncher extends LegionObject {
 
+  public TaskLauncher(int taskId, byte[] arg) {
+    this(taskId);
+    setTaskArg(nativeHandle, arg);
+  }
+
   public TaskLauncher(int taskId) {
     newTaskLauncher();
     setTaskId(nativeHandle, taskId);
@@ -18,4 +23,5 @@ public class TaskLauncher extends LegionObject {
   private native void newTaskLauncher();
 
   private native void setTaskId(long handle, int taskId);
+  private native void setTaskArg(long handle, byte[] arg);
 }

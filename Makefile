@@ -13,6 +13,7 @@ NATIVE_JAVA_CLASSES = \
 	org.legion.LegionObject \
 	org.legion.Future \
 	org.legion.Context \
+	org.legion.Task \
 	org.legion.TaskLauncher
 
 NATIVE_INCLUDE = ./include

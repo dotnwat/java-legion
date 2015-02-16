@@ -5,6 +5,7 @@
 #include "include/org_legion_Runtime.h"
 #include "include/org_legion_TaskLauncher.h"
 #include "include/org_legion_Future.h"
+#include "include/org_legion_Task.h"
 
 using namespace LegionRuntime::HighLevel;
 
@@ -62,11 +63,22 @@ template<class PTR, class DERIVED> class LegionNativeClass {
  */
 class TaskLauncherWrapper {
  public:
+
   TaskLauncherWrapper() {
     launcher.task_id = TASK_WRAPPER_ID;
   }
+
   TaskLauncher launcher;
+
   int task_id;
+  size_t arg_size;
+  char *arg_data;
+};
+
+struct TaskArgumentWrapper {
+  int task_id;
+  size_t size;
+  char data[];
 };
 
 
@@ -95,8 +107,8 @@ void task_wrapper(const Task *task, const std::vector<PhysicalRegion>& regions,
 {
   JNIEnv *env = getJniEnv();
 
-  assert(task->arglen == sizeof(int));
-  int task_id = *(const int *)task->args;
+  TaskArgumentWrapper *args = (TaskArgumentWrapper*)task->args;
+  int task_id = args->task_id;
 
   // create array of pointers to physical regions
   unsigned nregions = regions.size();
@@ -174,6 +186,15 @@ jlong Java_org_legion_Runtime_hlr_1execute_1task(JNIEnv *env, jobject jobj,
   Context ctx = reinterpret_cast<Context>(jctx);
   TaskLauncherWrapper *launcher = reinterpret_cast<TaskLauncherWrapper*>(jlauncher);
 
+  // so much memory leak terriblenss
+  TaskArgumentWrapper *task_args = (TaskArgumentWrapper*)malloc(sizeof(*task_args) + launcher->arg_size);
+  task_args->task_id = launcher->task_id;
+  task_args->size = launcher->arg_size;
+  memcpy(&task_args->data[0], launcher->arg_data, task_args->size);
+
+  launcher->launcher.argument = TaskArgument(task_args,
+      sizeof(*task_args) + launcher->arg_size);
+
   Future *result = new Future;
   *result = runtime->execute_task(ctx, launcher->launcher);
 
@@ -182,9 +203,9 @@ jlong Java_org_legion_Runtime_hlr_1execute_1task(JNIEnv *env, jobject jobj,
 
 void Java_org_legion_Runtime_start(JNIEnv *env, jclass jrt, jobjectArray jargs)
 {
-  const int argc = env->GetArrayLength(jargs);
+  const unsigned argc = env->GetArrayLength(jargs);
   char **argv = new char*[argc];
-  for (int i = 0; i < argc; i++) {
+  for (unsigned i = 0; i < argc; i++) {
     jstring jargv = static_cast<jstring>(env->GetObjectArrayElement(jargs, i));
     const char *jargvp = env->GetStringUTFChars(jargv, NULL);
     argv[i] = strdup(jargvp);
@@ -246,10 +267,24 @@ void Java_org_legion_TaskLauncher_setTaskId(JNIEnv *env, jobject jobj,
 {
   TaskLauncherWrapper *l = reinterpret_cast<TaskLauncherWrapper*>(jhandle);
   l->task_id = static_cast<int>(jtaskId);
-  // FIXME: needs read-copy-update treatment because we need to stuff the task
-  // id and arguments into taskargument but the java app might do that in any
-  // order.
-  l->launcher.argument = TaskArgument(&l->task_id, sizeof(l->task_id));
+}
+
+/*
+ * Class:     org_legion_TaskLauncher
+ * Method:    setTaskArg
+ * Signature: (J[B)V
+ */
+void Java_org_legion_TaskLauncher_setTaskArg(JNIEnv *env, jobject jobj,
+    jlong jhandle, jbyteArray jarg)
+{
+  TaskLauncherWrapper *l = reinterpret_cast<TaskLauncherWrapper*>(jhandle);
+
+  jsize nelms = env->GetArrayLength(jarg);
+  l->arg_data = new char[nelms]; // FIXME; memory leak never freed
+  jbyte *data = env->GetByteArrayElements(jarg, NULL);
+  memcpy(l->arg_data, (char*)data, static_cast<size_t>(nelms));
+  l->arg_size = static_cast<size_t>(nelms);
+  env->ReleaseByteArrayElements(jarg, data, JNI_ABORT);
 }
 
 /*
@@ -272,4 +307,21 @@ JNIEXPORT void JNICALL Java_org_legion_Future_waitOnComplete(JNIEnv *env, jobjec
 {
   Future *future = reinterpret_cast<Future*>(jhandle);
   future->get_void_result();
+}
+
+/*
+ * Class:     org_legion_Task
+ * Method:    getArgs
+ * Signature: (J)[B
+ */
+jbyteArray Java_org_legion_Task_getArgs(JNIEnv *env, jobject jobj, jlong jhandle)
+{
+  const Task *task = reinterpret_cast<const Task*>(jhandle);
+
+  TaskArgumentWrapper *args = (TaskArgumentWrapper*)task->args;
+
+  jbyteArray ret = env->NewByteArray(args->size);
+  env->SetByteArrayRegion(ret, 0, args->size, (const jbyte*)args->data);
+
+  return ret;
 }
