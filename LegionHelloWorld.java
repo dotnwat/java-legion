@@ -31,6 +31,7 @@ public class LegionHelloWorld {
       RegionRequirement req = new RegionRequirement(lr,
           PrivilegeMode.READ_WRITE, CoherenceProperty.EXCLUSIVE,
           lr);
+      req.addField(1);
     }
   }
 

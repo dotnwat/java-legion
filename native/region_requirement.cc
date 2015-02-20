@@ -116,3 +116,17 @@ JNIEXPORT void JNICALL Java_org_legion_RegionRequirement_setCoherence
       assert(0);
   }
 }
+
+/*
+ * Class:     org_legion_RegionRequirement
+ * Method:    addField
+ * Signature: (JIZ)V
+ */
+JNIEXPORT void JNICALL Java_org_legion_RegionRequirement_addField
+  (JNIEnv *env, jobject jobj, jlong jhandle, jint jfid, jboolean jinstance)
+{
+  RegionRequirement *req = reinterpret_cast<RegionRequirement*>(jhandle);
+  req->add_field(
+      static_cast<FieldID>(jfid),
+      static_cast<bool>(jinstance));
+}
