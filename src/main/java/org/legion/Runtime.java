@@ -109,5 +109,43 @@ public class Runtime {
     return new Future(futureHandle);
   }
 
+  /**
+   *
+   */
+  public IndexSpace createIndexSpace(Context ctx, long max_elems) {
+    long isHandle = hlr_create_index_space(handle, ctx.handle, max_elems);
+    return new IndexSpace(isHandle);
+  }
+
+  /**
+   *
+   */
+  public FieldSpace createFieldSpace(Context ctx) {
+    long fsHandle = hlr_create_field_space(handle, ctx.handle);
+    return new FieldSpace(fsHandle);
+  }
+
+  /**
+   *
+   */
+  public FieldAllocator createFieldAllocator(Context ctx, FieldSpace fs) {
+    long faHandle = hlr_create_field_allocator(handle, ctx.handle,
+        fs.nativeHandle);
+    return new FieldAllocator(faHandle);
+  }
+
+  /**
+   *
+   */
+  public LogicalRegion createLogicalRegion(Context ctx, IndexSpace is, FieldSpace fs) {
+    long lrHandle = hlr_create_logical_region(handle, ctx.handle,
+        is.nativeHandle, fs.nativeHandle);
+    return new LogicalRegion(lrHandle);
+  }
+
   private native long hlr_execute_task(long rt, long ctx, long launcher);
+  private native long hlr_create_index_space(long rt, long ctx, long max_elems);
+  private native long hlr_create_field_space(long rt, long ctx);
+  private native long hlr_create_field_allocator(long rt, long ctx, long fs);
+  private native long hlr_create_logical_region(long rt, long ctx, long is, long fs);
 }

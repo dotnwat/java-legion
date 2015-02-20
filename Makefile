@@ -14,12 +14,17 @@ NATIVE_JAVA_CLASSES = \
 	org.legion.Future \
 	org.legion.Context \
 	org.legion.Task \
+	org.legion.IndexSpace \
+	org.legion.FieldSpace \
+	org.legion.FieldAllocator \
+	org.legion.LogicalRegion \
+	org.legion.RegionRequirement \
 	org.legion.TaskLauncher
 
 NATIVE_INCLUDE = ./include
 
 OUTFILE		:= target/liblegion_jni.so
-GEN_SRC		:= native/runtime.cc
+GEN_SRC		:= native/runtime.cc native/region_requirement.cc
 GEN_GPU_SRC	:=
 
 CC_FLAGS	:= -fPIC

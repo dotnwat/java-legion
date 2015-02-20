@@ -4,6 +4,13 @@ import org.legion.Context;
 import org.legion.Future;
 import org.legion.TaskLauncher;
 import org.legion.Task;
+import org.legion.IndexSpace;
+import org.legion.FieldSpace;
+import org.legion.FieldAllocator;
+import org.legion.LogicalRegion;
+import org.legion.RegionRequirement;
+import org.legion.PrivilegeMode;
+import org.legion.CoherenceProperty;
 
 public class LegionHelloWorld {
 
@@ -14,6 +21,16 @@ public class LegionHelloWorld {
     public void task(Task task, Context ctx, Runtime rt) {
       System.out.println("Hello world, from sub-task");
       System.out.println(new String(task.getArgs()));
+
+      IndexSpace is = rt.createIndexSpace(ctx, 1000);
+      FieldSpace fs = rt.createFieldSpace(ctx);
+      FieldAllocator fa = rt.createFieldAllocator(ctx, fs);
+      fa.allocateField(1024, 1);
+
+      LogicalRegion lr = rt.createLogicalRegion(ctx, is, fs);
+      RegionRequirement req = new RegionRequirement(lr,
+          PrivilegeMode.READ_WRITE, CoherenceProperty.EXCLUSIVE,
+          lr);
     }
   }
 

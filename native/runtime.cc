@@ -6,13 +6,14 @@
 #include "include/org_legion_TaskLauncher.h"
 #include "include/org_legion_Future.h"
 #include "include/org_legion_Task.h"
+#include "include/org_legion_IndexSpace.h"
+#include "include/org_legion_FieldSpace.h"
+#include "include/org_legion_FieldAllocator.h"
+#include "include/org_legion_LogicalRegion.h"
+#include "include/org_legion_RegionRequirement.h"
+#include "portal.h"
 
 using namespace LegionRuntime::HighLevel;
-
-enum TaskID {
-  TASK_WRAPPER_ID,
-  TOP_LEVEL_TASK_WRAPPER_ID,
-};
 
 static JavaVM *jvm;
 
@@ -33,74 +34,6 @@ static JNIEnv *getJniEnv(void) {
   assert(rs == JNI_OK);
   return env;
 }
-
-
-/*
- *
- */
-template<class PTR, class DERIVED> class LegionNativeClass {
- public:
-  static jclass getJClass(JNIEnv *env, const char *jclazz_name) {
-    jclass jclazz = env->FindClass(jclazz_name);
-    assert(jclazz != NULL);
-    return jclazz;
-  }
-
-  static jfieldID getHandleFieldID(JNIEnv *env) {
-    static jfieldID fid = env->GetFieldID(
-        DERIVED::getJClass(env), "nativeHandle", "J");
-    assert(fid != NULL);
-    return fid;
-  }
-
-  static void setHandle(JNIEnv *env, jobject jobj, PTR ptr) {
-    env->SetLongField(jobj, getHandleFieldID(env), reinterpret_cast<jlong>(ptr));
-  }
-};
-
-/*
- * Virtualizes the task_id
- */
-class TaskLauncherWrapper {
- public:
-
-  TaskLauncherWrapper() {
-    launcher.task_id = TASK_WRAPPER_ID;
-  }
-
-  TaskLauncher launcher;
-
-  int task_id;
-  size_t arg_size;
-  char *arg_data;
-};
-
-struct TaskArgumentWrapper {
-  int task_id;
-  size_t size;
-  char data[];
-};
-
-
-/*
- *
- */
-class TaskLauncherJni : public LegionNativeClass<TaskLauncherWrapper*, TaskLauncherJni> {
- public:
-  static jclass getJClass(JNIEnv *env) {
-    return LegionNativeClass::getJClass(env, "org/legion/TaskLauncher");
-  }
-};
-
-/*
- *
- */
-class FutureJni : public LegionNativeClass<Future*, FutureJni> {
- public:
-  static jclass getJClass(JNIEnv *env) {
-    return LegionNativeClass::getJClass(env, "org/legion/Future");
-  }
-};
 
 void task_wrapper(const Task *task, const std::vector<PhysicalRegion>& regions,
     Context ctx, HighLevelRuntime *runtime)
@@ -324,4 +257,135 @@ jbyteArray Java_org_legion_Task_getArgs(JNIEnv *env, jobject jobj, jlong jhandle
   env->SetByteArrayRegion(ret, 0, args->size, (const jbyte*)args->data);
 
   return ret;
+}
+
+/*
+ * Class:     org_legion_Runtime
+ * Method:    hlr_create_index_space
+ * Signature: (JJJ)J
+ */
+jlong Java_org_legion_Runtime_hlr_1create_1index_1space(JNIEnv *env,
+    jobject jobj, jlong jrt, jlong jctx, jlong jmax_elems)
+{
+  HighLevelRuntime *runtime = reinterpret_cast<HighLevelRuntime*>(jrt);
+  Context ctx = reinterpret_cast<Context>(jctx);
+
+  IndexSpace *is = new IndexSpace;
+  *is = runtime->create_index_space(ctx, static_cast<size_t>(jmax_elems));
+
+  return reinterpret_cast<jlong>(is);
+}
+
+/*
+ * Class:     org_legion_Runtime
+ * Method:    hlr_create_field_space
+ * Signature: (JJ)J
+ */
+JNIEXPORT jlong JNICALL Java_org_legion_Runtime_hlr_1create_1field_1space(JNIEnv *env,
+    jobject jobj, jlong jrt, jlong jctx)
+{
+  HighLevelRuntime *runtime = reinterpret_cast<HighLevelRuntime*>(jrt);
+  Context ctx = reinterpret_cast<Context>(jctx);
+
+  FieldSpace *fs = new FieldSpace;
+  *fs = runtime->create_field_space(ctx);
+
+  return reinterpret_cast<jlong>(fs);
+}
+
+/*
+ * Class:     org_legion_Runtime
+ * Method:    hlr_create_field_allocator
+ * Signature: (JJJ)J
+ */
+JNIEXPORT jlong JNICALL Java_org_legion_Runtime_hlr_1create_1field_1allocator
+  (JNIEnv *env, jobject jobj, jlong jrt, jlong jctx, jlong jfs)
+{
+  HighLevelRuntime *runtime = reinterpret_cast<HighLevelRuntime*>(jrt);
+  Context ctx = reinterpret_cast<Context>(jctx);
+  FieldSpace *fs = reinterpret_cast<FieldSpace*>(jfs);
+
+  FieldAllocator *fa = new FieldAllocator;
+  *fa = runtime->create_field_allocator(ctx, *fs);
+
+  return reinterpret_cast<jlong>(fa);
+}
+
+/*
+ * Class:     org_legion_Runtime
+ * Method:    hlr_create_logical_region
+ * Signature: (JJJJ)J
+ */
+JNIEXPORT jlong JNICALL Java_org_legion_Runtime_hlr_1create_1logical_1region
+  (JNIEnv *env, jobject jobj, jlong jrt, jlong jctx, jlong jis, jlong jfs)
+{
+  HighLevelRuntime *runtime = reinterpret_cast<HighLevelRuntime*>(jrt);
+  Context ctx = reinterpret_cast<Context>(jctx);
+  IndexSpace *is = reinterpret_cast<IndexSpace*>(jis);
+  FieldSpace *fs = reinterpret_cast<FieldSpace*>(jfs);
+
+  LogicalRegion *lr = new LogicalRegion;
+  *lr = runtime->create_logical_region(ctx, *is, *fs);
+
+  return reinterpret_cast<jlong>(lr);
+}
+
+/*
+ * Class:     org_legion_IndexSpace
+ * Method:    disposeInternal
+ * Signature: (J)V
+ */
+void Java_org_legion_IndexSpace_disposeInternal(JNIEnv *env,
+    jobject jobj, jlong jhandle)
+{
+  delete reinterpret_cast<IndexSpace*>(jhandle);
+  IndexSpaceJni::setHandle(env, jobj, NULL);
+}
+
+/*
+ * Class:     org_legion_FieldSpace
+ * Method:    disposeInternal
+ * Signature: (J)V
+ */
+void Java_org_legion_FieldSpace_disposeInternal(JNIEnv *env,
+    jobject jobj, jlong jhandle)
+{
+  delete reinterpret_cast<FieldSpace*>(jhandle);
+  FieldSpaceJni::setHandle(env, jobj, NULL);
+}
+
+/*
+ * Class:     org_legion_FieldAllocator
+ * Method:    disposeInternal
+ * Signature: (J)V
+ */
+JNIEXPORT void JNICALL Java_org_legion_FieldAllocator_disposeInternal
+  (JNIEnv *env, jobject jobj, jlong jhandle)
+{
+  delete reinterpret_cast<FieldAllocator*>(jhandle);
+  FieldAllocatorJni::setHandle(env, jobj, NULL);
+}
+
+/*
+ * Class:     org_legion_FieldAllocator
+ * Method:    allocateField
+ * Signature: (JII)V
+ */
+JNIEXPORT void JNICALL Java_org_legion_FieldAllocator_allocateField
+  (JNIEnv *env, jobject jobj, jlong jhandle, jint jsize, jint jfieldId)
+{
+  FieldAllocator *fa = reinterpret_cast<FieldAllocator*>(jhandle);
+  fa->allocate_field((size_t)jsize, (int)jfieldId);
+}
+
+/*
+ * Class:     org_legion_LogicalRegion
+ * Method:    disposeInternal
+ * Signature: (J)V
+ */
+JNIEXPORT void JNICALL Java_org_legion_LogicalRegion_disposeInternal
+  (JNIEnv *env, jobject jobj, jlong jhandle)
+{
+  delete reinterpret_cast<LogicalRegion*>(jhandle);
+  LogicalRegionJni::setHandle(env, jobj, NULL);
 }
