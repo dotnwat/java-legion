@@ -11,11 +11,8 @@ public class RegionRequirement extends LegionObject {
   public RegionRequirement(final LogicalRegion region,
       final PrivilegeMode priv, final CoherenceProperty coherence,
       final LogicalRegion parent) {
-    newRegionRequirement();
-    setRegion(nativeHandle, region.nativeHandle);
-    setPrivilege(nativeHandle, priv.getValue());
-    setCoherence(nativeHandle, coherence.getValue());
-    setParent(nativeHandle, parent.nativeHandle);
+    newRegionRequirement(region.nativeHandle, priv.getValue(),
+        coherence.getValue(), parent.nativeHandle);
   }
 
   /**
@@ -40,7 +37,8 @@ public class RegionRequirement extends LegionObject {
 
   private native void disposeInternal(long handle);
 
-  private native void newRegionRequirement();
+  private native void newRegionRequirement(long region, long priv,
+      long coherence, long parent);
 
   private native void setRegion(long handle, long regionHandle);
   private native void setParent(long handle, long regionHandle);

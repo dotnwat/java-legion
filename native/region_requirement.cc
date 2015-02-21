@@ -22,12 +22,16 @@ JNIEXPORT void JNICALL Java_org_legion_RegionRequirement_disposeInternal
 /*
  * Class:     org_legion_RegionRequirement
  * Method:    newRegionRequirement
- * Signature: ()V
+ * Signature: (JJJJ)V
  */
 JNIEXPORT void JNICALL Java_org_legion_RegionRequirement_newRegionRequirement
-  (JNIEnv *env, jobject jobj)
+  (JNIEnv *env, jobject jobj, jlong jregion, jlong jpriv, jlong jcoherence, jlong jparent)
 {
-  RegionRequirement *req = new RegionRequirement;
+  RegionRequirement *req = new RegionRequirement(
+      *reinterpret_cast<LogicalRegion*>(jregion),
+      getPrivilegeMode(jpriv),
+      getCoherenceProperty(jcoherence),
+      *reinterpret_cast<LogicalRegion*>(jparent));
   RegionRequirementJni::setHandle(env, jobj, req);
 }
 
@@ -66,28 +70,7 @@ JNIEXPORT void JNICALL Java_org_legion_RegionRequirement_setPrivilege
   (JNIEnv *env, jobject jobj, jlong jhandle, jint jpriv)
 {
   RegionRequirement *req = reinterpret_cast<RegionRequirement*>(jhandle);
-  switch (static_cast<int>(jpriv)) {
-    case 0:
-      req->privilege = NO_ACCESS;
-      break;
-    case 1:
-      req->privilege = READ_ONLY;
-      break;
-    case 2:
-      req->privilege = READ_WRITE;
-      break;
-    case 3:
-      req->privilege = WRITE_ONLY;
-      break;
-    case 4:
-      req->privilege = WRITE_DISCARD;
-      break;
-    case 5:
-      req->privilege = REDUCE;
-      break;
-    default:
-      assert(0);
-  }
+  req->privilege = getPrivilegeMode(jpriv);
 }
 
 /*
@@ -99,22 +82,7 @@ JNIEXPORT void JNICALL Java_org_legion_RegionRequirement_setCoherence
   (JNIEnv *env, jobject jobj, jlong jhandle, jint jcoherence)
 {
   RegionRequirement *req = reinterpret_cast<RegionRequirement*>(jhandle);
-  switch (static_cast<int>(jcoherence)) {
-    case 0:
-      req->prop = EXCLUSIVE;
-      break;
-    case 1:
-      req->prop = ATOMIC;
-      break;
-    case 2:
-      req->prop = SIMULTANEOUS;
-      break;
-    case 3:
-      req->prop = RELAXED;
-      break;
-    default:
-      assert(0);
-  }
+  req->prop = getCoherenceProperty(jcoherence);
 }
 
 /*

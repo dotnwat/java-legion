@@ -1,3 +1,5 @@
 target
 include
 native/*.o
+*.class
+*/**.class

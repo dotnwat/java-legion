@@ -11,6 +11,8 @@ import org.legion.LogicalRegion;
 import org.legion.RegionRequirement;
 import org.legion.PrivilegeMode;
 import org.legion.CoherenceProperty;
+import org.legion.InlineLauncher;
+import org.legion.PhysicalRegion;
 
 public class LegionHelloWorld {
 
@@ -28,10 +30,16 @@ public class LegionHelloWorld {
       fa.allocateField(1024, 1);
 
       LogicalRegion lr = rt.createLogicalRegion(ctx, is, fs);
+
       RegionRequirement req = new RegionRequirement(lr,
           PrivilegeMode.READ_WRITE, CoherenceProperty.EXCLUSIVE,
           lr);
       req.addField(1);
+
+      InlineLauncher il = new InlineLauncher(req);
+
+      PhysicalRegion pr = rt.mapRegion(ctx, il);
+      pr.waitForValid();
     }
   }
 

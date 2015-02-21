@@ -143,9 +143,18 @@ public class Runtime {
     return new LogicalRegion(lrHandle);
   }
 
+  /**
+   *
+   */
+  public PhysicalRegion mapRegion(Context ctx, InlineLauncher launcher) {
+    long prHandle = mapRegion(handle, ctx.handle, launcher.nativeHandle);
+    return new PhysicalRegion(prHandle);
+  }
+
   private native long hlr_execute_task(long rt, long ctx, long launcher);
   private native long hlr_create_index_space(long rt, long ctx, long max_elems);
   private native long hlr_create_field_space(long rt, long ctx);
   private native long hlr_create_field_allocator(long rt, long ctx, long fs);
   private native long hlr_create_logical_region(long rt, long ctx, long is, long fs);
+  private native long mapRegion(long rt, long ctx, long launcher);
 }

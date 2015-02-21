@@ -9,6 +9,41 @@ enum TaskID {
   TOP_LEVEL_TASK_WRAPPER_ID,
 };
 
+static inline CoherenceProperty getCoherenceProperty(jint jcoherence)
+{
+  switch (static_cast<int>(jcoherence)) {
+    case 0:
+      return EXCLUSIVE;
+    case 1:
+      return ATOMIC;
+    case 2:
+      return SIMULTANEOUS;
+    case 3:
+      return RELAXED;
+    default:
+      assert(0);
+  }
+}
+
+static inline PrivilegeMode getPrivilegeMode(jint jpriv)
+{
+  switch (static_cast<int>(jpriv)) {
+    case 0:
+      return NO_ACCESS;
+    case 1:
+      return READ_ONLY;
+    case 2:
+      return READ_WRITE;
+    case 3:
+      return WRITE_ONLY;
+    case 4:
+      return WRITE_DISCARD;
+    case 5:
+      return REDUCE;
+    default:
+      assert(0);
+  }
+}
 
 
 /*
@@ -112,5 +147,19 @@ class RegionRequirementJni : public LegionNativeClass<RegionRequirement*, Region
     return LegionNativeClass::getJClass(env, "org/legion/RegionRequirement");
   }
 };
+
+class InlineLauncherJni : public LegionNativeClass<InlineLauncher*, InlineLauncherJni> {
+ public:
+  static jclass getJClass(JNIEnv *env) {
+    return LegionNativeClass::getJClass(env, "org/legion/InlineLauncher");
+  }
+};
+
+//class XJni : public LegionNativeClass<X*, XJni> {
+// public:
+//  static jclass getJClass(JNIEnv *env) {
+//    return LegionNativeClass::getJClass(env, "org/legion/X");
+//  }
+//};
 
 #endif
