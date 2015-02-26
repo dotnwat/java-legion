@@ -14,5 +14,11 @@ public class PhysicalRegion {
     waitForValid(handle);
   }
 
+  public LogicalRegion getLogicalRegion() {
+    long lrHandle = getLogicalRegion(handle);
+    return new LogicalRegion(lrHandle);
+  }
+
   private native void waitForValid(long handle);
+  private native long getLogicalRegion(long handle);
 }
