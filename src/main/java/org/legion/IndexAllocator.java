@@ -9,6 +9,28 @@ public class IndexAllocator extends LegionObject {
     nativeHandle = handle;
   }
 
+  /**
+   *
+   */
+  public IndexSpace getIndexSpace() {
+    long is = getIndexSpace(nativeHandle);
+    return new IndexSpace(is);
+  }
+
+  /**
+   *
+   */
+  public Pointer allocate() {
+    return allocate(1);
+  }
+
+  /**
+   *
+   */
+  public Pointer allocate(int count) {
+    long p = allocate(nativeHandle, count);
+    return new Pointer(p);
+  }
 
   @Override
   protected void disposeInternal() {
@@ -17,4 +39,6 @@ public class IndexAllocator extends LegionObject {
   }
 
   private native void disposeInternal(long handle);
+  private native long getIndexSpace(long handle);
+  private native long allocate(long handle, int count);
 }

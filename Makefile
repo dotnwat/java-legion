@@ -22,6 +22,7 @@ NATIVE_JAVA_CLASSES = \
 	org.legion.InlineLauncher \
 	org.legion.PhysicalRegion \
 	org.legion.IndexAllocator \
+	org.legion.Pointer \
 	org.legion.TaskLauncher
 
 NATIVE_INCLUDE = ./include
