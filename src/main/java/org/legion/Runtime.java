@@ -104,7 +104,7 @@ public class Runtime {
    *
    */
   public Future executeTask(Context ctx, TaskLauncher launcher) {
-    long futureHandle = hlr_execute_task(handle, ctx.handle,
+    long futureHandle = executeTask(handle, ctx.handle,
         launcher.nativeHandle);
     return new Future(futureHandle);
   }
@@ -113,7 +113,7 @@ public class Runtime {
    *
    */
   public IndexSpace createIndexSpace(Context ctx, long max_elems) {
-    long isHandle = hlr_create_index_space(handle, ctx.handle, max_elems);
+    long isHandle = createIndexSpace(handle, ctx.handle, max_elems);
     return new IndexSpace(isHandle);
   }
 
@@ -121,7 +121,7 @@ public class Runtime {
    *
    */
   public FieldSpace createFieldSpace(Context ctx) {
-    long fsHandle = hlr_create_field_space(handle, ctx.handle);
+    long fsHandle = createFieldSpace(handle, ctx.handle);
     return new FieldSpace(fsHandle);
   }
 
@@ -129,7 +129,7 @@ public class Runtime {
    *
    */
   public FieldAllocator createFieldAllocator(Context ctx, FieldSpace fs) {
-    long faHandle = hlr_create_field_allocator(handle, ctx.handle,
+    long faHandle = createFieldAllocator(handle, ctx.handle,
         fs.nativeHandle);
     return new FieldAllocator(faHandle);
   }
@@ -138,7 +138,7 @@ public class Runtime {
    *
    */
   public LogicalRegion createLogicalRegion(Context ctx, IndexSpace is, FieldSpace fs) {
-    long lrHandle = hlr_create_logical_region(handle, ctx.handle,
+    long lrHandle = createLogicalRegion(handle, ctx.handle,
         is.nativeHandle, fs.nativeHandle);
     return new LogicalRegion(lrHandle);
   }
@@ -159,11 +159,11 @@ public class Runtime {
     return new IndexAllocator(iaHandle);
   }
 
-  private native long hlr_execute_task(long rt, long ctx, long launcher);
-  private native long hlr_create_index_space(long rt, long ctx, long max_elems);
-  private native long hlr_create_field_space(long rt, long ctx);
-  private native long hlr_create_field_allocator(long rt, long ctx, long fs);
-  private native long hlr_create_logical_region(long rt, long ctx, long is, long fs);
+  private native long executeTask(long rt, long ctx, long launcher);
+  private native long createIndexSpace(long rt, long ctx, long max_elems);
+  private native long createFieldSpace(long rt, long ctx);
+  private native long createFieldAllocator(long rt, long ctx, long fs);
+  private native long createLogicalRegion(long rt, long ctx, long is, long fs);
   private native long mapRegion(long rt, long ctx, long launcher);
   private native long createIndexAllocator(long rt, long ctx, long is);
 }

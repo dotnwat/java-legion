@@ -102,10 +102,10 @@ void top_level_task_wrapper(const Task *task,
 
 /*
  * Class:     org_legion_Runtime
- * Method:    hlr_execute_task
+ * Method:    executeTask
  * Signature: (JJJ)J
  */
-jlong Java_org_legion_Runtime_hlr_1execute_1task(JNIEnv *env, jobject jobj,
+jlong Java_org_legion_Runtime_executeTask(JNIEnv *env, jobject jobj,
     jlong jrt, jlong jctx, jlong jlauncher)
 {
   HighLevelRuntime *runtime = reinterpret_cast<HighLevelRuntime*>(jrt);
@@ -179,10 +179,10 @@ jbyteArray Java_org_legion_Task_getArgs(JNIEnv *env, jobject jobj, jlong jhandle
 
 /*
  * Class:     org_legion_Runtime
- * Method:    hlr_create_index_space
+ * Method:    createIndexSpace
  * Signature: (JJJ)J
  */
-jlong Java_org_legion_Runtime_hlr_1create_1index_1space(JNIEnv *env,
+jlong Java_org_legion_Runtime_createIndexSpace(JNIEnv *env,
     jobject jobj, jlong jrt, jlong jctx, jlong jmax_elems)
 {
   HighLevelRuntime *runtime = reinterpret_cast<HighLevelRuntime*>(jrt);
@@ -196,10 +196,10 @@ jlong Java_org_legion_Runtime_hlr_1create_1index_1space(JNIEnv *env,
 
 /*
  * Class:     org_legion_Runtime
- * Method:    hlr_create_field_space
+ * Method:    createFieldSpace
  * Signature: (JJ)J
  */
-JNIEXPORT jlong JNICALL Java_org_legion_Runtime_hlr_1create_1field_1space(JNIEnv *env,
+JNIEXPORT jlong JNICALL Java_org_legion_Runtime_createFieldSpace(JNIEnv *env,
     jobject jobj, jlong jrt, jlong jctx)
 {
   HighLevelRuntime *runtime = reinterpret_cast<HighLevelRuntime*>(jrt);
@@ -213,10 +213,10 @@ JNIEXPORT jlong JNICALL Java_org_legion_Runtime_hlr_1create_1field_1space(JNIEnv
 
 /*
  * Class:     org_legion_Runtime
- * Method:    hlr_create_field_allocator
+ * Method:    createFieldAllocator
  * Signature: (JJJ)J
  */
-JNIEXPORT jlong JNICALL Java_org_legion_Runtime_hlr_1create_1field_1allocator
+JNIEXPORT jlong JNICALL Java_org_legion_Runtime_createFieldAllocator
   (JNIEnv *env, jobject jobj, jlong jrt, jlong jctx, jlong jfs)
 {
   HighLevelRuntime *runtime = reinterpret_cast<HighLevelRuntime*>(jrt);
@@ -231,10 +231,10 @@ JNIEXPORT jlong JNICALL Java_org_legion_Runtime_hlr_1create_1field_1allocator
 
 /*
  * Class:     org_legion_Runtime
- * Method:    hlr_create_logical_region
+ * Method:    createLogicalRegion
  * Signature: (JJJJ)J
  */
-JNIEXPORT jlong JNICALL Java_org_legion_Runtime_hlr_1create_1logical_1region
+JNIEXPORT jlong JNICALL Java_org_legion_Runtime_createLogicalRegion
   (JNIEnv *env, jobject jobj, jlong jrt, jlong jctx, jlong jis, jlong jfs)
 {
   HighLevelRuntime *runtime = reinterpret_cast<HighLevelRuntime*>(jrt);
