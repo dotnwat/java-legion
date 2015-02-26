@@ -1,3 +1,9 @@
+#include <jni.h>
+
+#include <legion.h>
+
+#include "include/org_legion_TaskLauncher.h"
+#include "portal.h"
 
 /*
  * Class:     org_legion_TaskLauncher

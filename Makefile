@@ -27,7 +27,17 @@ NATIVE_JAVA_CLASSES = \
 NATIVE_INCLUDE = ./include
 
 OUTFILE		:= target/liblegion_jni.so
-GEN_SRC		:= native/runtime.cc native/region_requirement.cc
+GEN_SRC		:= native/runtime.cc \
+			   native/region_requirement.cc \
+			   native/logical_region.cc \
+			   native/inline_launcher.cc \
+			   native/physical_region.cc \
+			   native/task_launcher.cc \
+			   native/future.cc \
+			   native/field_allocator.cc \
+			   native/index_space.cc \
+			   native/field_space.cc \
+			   native/index_allocator.cc
 GEN_GPU_SRC	:=
 
 CC_FLAGS	:= -fPIC

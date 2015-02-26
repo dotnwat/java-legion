@@ -3,17 +3,7 @@
 #include <legion.h>
 
 #include "include/org_legion_Runtime.h"
-#include "include/org_legion_TaskLauncher.h"
-#include "include/org_legion_Future.h"
 #include "include/org_legion_Task.h"
-#include "include/org_legion_IndexSpace.h"
-#include "include/org_legion_FieldSpace.h"
-#include "include/org_legion_FieldAllocator.h"
-#include "include/org_legion_LogicalRegion.h"
-#include "include/org_legion_RegionRequirement.h"
-#include "include/org_legion_InlineLauncher.h"
-#include "include/org_legion_PhysicalRegion.h"
-#include "include/org_legion_IndexAllocator.h"
 #include "portal.h"
 
 using namespace LegionRuntime::HighLevel;
@@ -171,81 +161,6 @@ void Java_org_legion_Runtime_start(JNIEnv *env, jclass jrt, jobjectArray jargs)
 }
 
 /*
- * Class:     org_legion_TaskLauncher
- * Method:    newTaskLauncher
- * Signature: ()V
- */
-void Java_org_legion_TaskLauncher_newTaskLauncher(JNIEnv *env, jobject jobj)
-{
-  TaskLauncherWrapper *l = new TaskLauncherWrapper();
-  TaskLauncherJni::setHandle(env, jobj, l);
-}
-
-/*
- * Class:     org_legion_TaskLauncher
- * Method:    disposeInternal
- * Signature: (J)V
- */
-void Java_org_legion_TaskLauncher_disposeInternal(JNIEnv *env, jobject jobj,
-    jlong jhandle)
-{
-  delete reinterpret_cast<TaskLauncher*>(jhandle);
-  TaskLauncherJni::setHandle(env, jobj, NULL);
-}
-
-/*
- * Class:     org_legion_TaskLauncher
- * Method:    setTaskId
- * Signature: (JI)V
- */
-void Java_org_legion_TaskLauncher_setTaskId(JNIEnv *env, jobject jobj,
-    jlong jhandle, jint jtaskId)
-{
-  TaskLauncherWrapper *l = reinterpret_cast<TaskLauncherWrapper*>(jhandle);
-  l->task_id = static_cast<int>(jtaskId);
-}
-
-/*
- * Class:     org_legion_TaskLauncher
- * Method:    setTaskArg
- * Signature: (J[B)V
- */
-void Java_org_legion_TaskLauncher_setTaskArg(JNIEnv *env, jobject jobj,
-    jlong jhandle, jbyteArray jarg)
-{
-  TaskLauncherWrapper *l = reinterpret_cast<TaskLauncherWrapper*>(jhandle);
-
-  jsize nelms = env->GetArrayLength(jarg);
-  l->arg_data = new char[nelms]; // FIXME; memory leak never freed
-  jbyte *data = env->GetByteArrayElements(jarg, NULL);
-  memcpy(l->arg_data, (char*)data, static_cast<size_t>(nelms));
-  l->arg_size = static_cast<size_t>(nelms);
-  env->ReleaseByteArrayElements(jarg, data, JNI_ABORT);
-}
-
-/*
- * Class:     org_legion_Future
- * Method:    disposeInternal
- * Signature: (J)V
- */
-void Java_org_legion_Future_disposeInternal(JNIEnv *env, jobject jobj, jlong jhandle)
-{
-  delete reinterpret_cast<Future*>(jhandle);
-  FutureJni::setHandle(env, jobj, NULL);
-}
-
-/*
- * Class:     org_legion_Future
- * Method:    waitOnComplete
- * Signature: (J)V
- */
-JNIEXPORT void JNICALL Java_org_legion_Future_waitOnComplete(JNIEnv *env, jobject jobj, jlong jhandle)
-{
-  Future *future = reinterpret_cast<Future*>(jhandle);
-  future->get_void_result();
-}
-
-/*
  * Class:     org_legion_Task
  * Method:    getArgs
  * Signature: (J)[B
@@ -334,103 +249,6 @@ JNIEXPORT jlong JNICALL Java_org_legion_Runtime_hlr_1create_1logical_1region
 }
 
 /*
- * Class:     org_legion_IndexSpace
- * Method:    disposeInternal
- * Signature: (J)V
- */
-void Java_org_legion_IndexSpace_disposeInternal(JNIEnv *env,
-    jobject jobj, jlong jhandle)
-{
-  delete reinterpret_cast<IndexSpace*>(jhandle);
-  IndexSpaceJni::setHandle(env, jobj, NULL);
-}
-
-/*
- * Class:     org_legion_FieldSpace
- * Method:    disposeInternal
- * Signature: (J)V
- */
-void Java_org_legion_FieldSpace_disposeInternal(JNIEnv *env,
-    jobject jobj, jlong jhandle)
-{
-  delete reinterpret_cast<FieldSpace*>(jhandle);
-  FieldSpaceJni::setHandle(env, jobj, NULL);
-}
-
-/*
- * Class:     org_legion_FieldAllocator
- * Method:    disposeInternal
- * Signature: (J)V
- */
-JNIEXPORT void JNICALL Java_org_legion_FieldAllocator_disposeInternal
-  (JNIEnv *env, jobject jobj, jlong jhandle)
-{
-  delete reinterpret_cast<FieldAllocator*>(jhandle);
-  FieldAllocatorJni::setHandle(env, jobj, NULL);
-}
-
-/*
- * Class:     org_legion_FieldAllocator
- * Method:    allocateField
- * Signature: (JII)V
- */
-JNIEXPORT void JNICALL Java_org_legion_FieldAllocator_allocateField
-  (JNIEnv *env, jobject jobj, jlong jhandle, jint jsize, jint jfieldId)
-{
-  FieldAllocator *fa = reinterpret_cast<FieldAllocator*>(jhandle);
-  fa->allocate_field((size_t)jsize, (int)jfieldId);
-}
-
-/*
- * Class:     org_legion_LogicalRegion
- * Method:    disposeInternal
- * Signature: (J)V
- */
-JNIEXPORT void JNICALL Java_org_legion_LogicalRegion_disposeInternal
-  (JNIEnv *env, jobject jobj, jlong jhandle)
-{
-  delete reinterpret_cast<LogicalRegion*>(jhandle);
-  LogicalRegionJni::setHandle(env, jobj, NULL);
-}
-
-/*
- * Class:     org_legion_InlineLauncher
- * Method:    disposeInternal
- * Signature: (J)V
- */
-JNIEXPORT void JNICALL Java_org_legion_InlineLauncher_disposeInternal
-  (JNIEnv *env, jobject jobj, jlong jhandle)
-{
-  delete reinterpret_cast<InlineLauncher*>(jhandle);
-  InlineLauncherJni::setHandle(env, jobj, NULL);
-}
-
-/*
- * Class:     org_legion_InlineLauncher
- * Method:    newInlineLauncher
- * Signature: ()V
- */
-JNIEXPORT void JNICALL Java_org_legion_InlineLauncher_newInlineLauncher
-  (JNIEnv *env, jobject jobj)
-{
-  InlineLauncher *il = new InlineLauncher;
-  InlineLauncherJni::setHandle(env, jobj, il);
-}
-
-/*
- * Class:     org_legion_InlineLauncher
- * Method:    setRegionRequirement
- * Signature: (JJ)V
- */
-JNIEXPORT void JNICALL Java_org_legion_InlineLauncher_setRegionRequirement
-  (JNIEnv *env, jobject jobj, jlong jhandle, jlong jreq)
-{
-  InlineLauncher *il = reinterpret_cast<InlineLauncher*>(jhandle);
-  RegionRequirement *req = reinterpret_cast<RegionRequirement*>(jreq);
-  il->requirement = *req;
-}
-
-/*
  * Class:     org_legion_Runtime
  * Method:    mapRegion
  * Signature: (JJJ)J
@@ -446,46 +264,6 @@ JNIEXPORT jlong JNICALL Java_org_legion_Runtime_mapRegion
   *pr = runtime->map_region(ctx, *il);
 
   return reinterpret_cast<jlong>(pr);
-}
-
-/*
- * Class:     org_legion_PhysicalRegion
- * Method:    waitForValid
- * Signature: (J)V
- */
-JNIEXPORT void JNICALL Java_org_legion_PhysicalRegion_waitForValid
-  (JNIEnv *env, jobject jobj, jlong jhandle)
-{
-  PhysicalRegion *pr = reinterpret_cast<PhysicalRegion*>(jhandle);
-  pr->wait_until_valid();
-}
-
-/*
- * Class:     org_legion_PhysicalRegion
- * Method:    getLogicalRegion
- * Signature: (J)J
- */
-JNIEXPORT jlong JNICALL Java_org_legion_PhysicalRegion_getLogicalRegion
-  (JNIEnv *env, jobject jobj, jlong jhandle)
-{
-  PhysicalRegion *pr = reinterpret_cast<PhysicalRegion*>(jhandle);
-
-  LogicalRegion *lr = new LogicalRegion;
-  *lr = pr->get_logical_region();
-
-  return reinterpret_cast<jlong>(lr);
-}
-
-/*
- * Class:     org_legion_IndexAllocator
- * Method:    disposeInternal
- * Signature: (J)V
- */
-JNIEXPORT void JNICALL Java_org_legion_IndexAllocator_disposeInternal
-  (JNIEnv *env, jobject jobj, jlong jhandle)
-{
-  delete reinterpret_cast<IndexAllocator*>(jhandle);
-  IndexAllocatorJni::setHandle(env, jobj, NULL);
 }
 
 /*
