@@ -1,5 +1,8 @@
 package org.legion;
 
+/**
+ *
+ */
 public enum CoherenceProperty {
   EXCLUSIVE((int)    0),
   ATOMIC((int)       1),

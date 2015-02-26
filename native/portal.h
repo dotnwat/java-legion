@@ -155,6 +155,13 @@ class InlineLauncherJni : public LegionNativeClass<InlineLauncher*, InlineLaunch
   }
 };
 
+class IndexAllocatorJni : public LegionNativeClass<IndexAllocator*, IndexAllocatorJni> {
+ public:
+  static jclass getJClass(JNIEnv *env) {
+    return LegionNativeClass::getJClass(env, "org/legion/IndexAllocator");
+  }
+};
+
 //class XJni : public LegionNativeClass<X*, XJni> {
 // public:
 //  static jclass getJClass(JNIEnv *env) {

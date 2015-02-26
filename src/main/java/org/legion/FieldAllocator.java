@@ -4,10 +4,14 @@ package org.legion;
  *
  */
 public class FieldAllocator extends LegionObject {
+
   FieldAllocator(long handle) {
     nativeHandle = handle;
   }
 
+  /**
+   *
+   */
   public void allocateField(int size, int fieldId) {
     allocateField(nativeHandle, size, fieldId);
   }

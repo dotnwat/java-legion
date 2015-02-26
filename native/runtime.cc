@@ -13,6 +13,7 @@
 #include "include/org_legion_RegionRequirement.h"
 #include "include/org_legion_InlineLauncher.h"
 #include "include/org_legion_PhysicalRegion.h"
+#include "include/org_legion_IndexAllocator.h"
 #include "portal.h"
 
 using namespace LegionRuntime::HighLevel;
@@ -473,4 +474,34 @@ JNIEXPORT jlong JNICALL Java_org_legion_PhysicalRegion_getLogicalRegion
   *lr = pr->get_logical_region();
 
   return reinterpret_cast<jlong>(lr);
+}
+
+/*
+ * Class:     org_legion_IndexAllocator
+ * Method:    disposeInternal
+ * Signature: (J)V
+ */
+JNIEXPORT void JNICALL Java_org_legion_IndexAllocator_disposeInternal
+  (JNIEnv *env, jobject jobj, jlong jhandle)
+{
+  delete reinterpret_cast<IndexAllocator*>(jhandle);
+  IndexAllocatorJni::setHandle(env, jobj, NULL);
+}
+
+/*
+ * Class:     org_legion_Runtime
+ * Method:    createIndexAllocator
+ * Signature: (JJJ)J
+ */
+JNIEXPORT jlong JNICALL Java_org_legion_Runtime_createIndexAllocator
+  (JNIEnv *env, jobject jobj, jlong jrt, jlong jctx, jlong jis)
+{
+  HighLevelRuntime *runtime = reinterpret_cast<HighLevelRuntime*>(jrt);
+  Context ctx = reinterpret_cast<Context>(jctx);
+  IndexSpace *is = reinterpret_cast<IndexSpace*>(jis);
+
+  IndexAllocator *ia = new IndexAllocator;
+  *ia = runtime->create_index_allocator(ctx, *is);
+
+  return reinterpret_cast<jlong>(ia);
 }
