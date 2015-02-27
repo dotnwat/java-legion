@@ -44,7 +44,20 @@ JNIEXPORT jlong JNICALL Java_org_legion_IndexAllocator_allocate
   IndexAllocator *ia = reinterpret_cast<IndexAllocator*>(jhandle);
 
   ptr_t *p = new ptr_t;
-  *p = ia->alloc(static_cast<jint>(jcount));
+  *p = ia->alloc(static_cast<int>(jcount));
 
   return reinterpret_cast<jlong>(p);
+}
+
+/*
+ * Class:     org_legion_IndexAllocator
+ * Method:    free
+ * Signature: (JJI)V
+ */
+JNIEXPORT void JNICALL Java_org_legion_IndexAllocator_free
+  (JNIEnv *env, jobject jobj, jlong jhandle, jlong jptr, jint jcount)
+{
+  IndexAllocator *ia = reinterpret_cast<IndexAllocator*>(jhandle);
+  ptr_t *p = reinterpret_cast<ptr_t*>(jptr);
+  ia->free(*p, static_cast<int>(jcount));
 }

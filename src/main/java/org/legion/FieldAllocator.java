@@ -14,6 +14,22 @@ public class FieldAllocator extends LegionObject {
    */
   public void allocateField(int size, int fieldId) {
     allocateField(nativeHandle, size, fieldId);
+    // FIXME: return field id?
+  }
+
+  /**
+   *
+   */
+  public void freeField(int fieldId) {
+    freeField(nativeHandle, fieldId);
+  }
+
+  /**
+   *
+   */
+  public FieldSpace getFieldSpace() {
+    long fs = getFieldSpace(nativeHandle);
+    return new FieldSpace(fs);
   }
 
   @Override
@@ -24,4 +40,6 @@ public class FieldAllocator extends LegionObject {
 
   private native void disposeInternal(long handle);
   private native void allocateField(long handle, int size, int fieldId);
+  private native void freeField(long fa, int fieldId);
+  private native long getFieldSpace(long fa);
 };

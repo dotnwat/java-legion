@@ -32,6 +32,13 @@ public class IndexAllocator extends LegionObject {
     return new Pointer(p);
   }
 
+  /**
+   *
+   */
+  public void free(Pointer ptr, int count) {
+    free(nativeHandle, ptr.nativeHandle, count);
+  }
+
   @Override
   protected void disposeInternal() {
     assert(isInitialized());
@@ -41,4 +48,5 @@ public class IndexAllocator extends LegionObject {
   private native void disposeInternal(long handle);
   private native long getIndexSpace(long handle);
   private native long allocate(long handle, int count);
+  private native void free(long ia, long ptr, int count);
 }
