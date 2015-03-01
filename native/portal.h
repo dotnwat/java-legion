@@ -3,6 +3,7 @@
 
 #include <legion.h>
 using namespace LegionRuntime::HighLevel;
+using namespace LegionRuntime::Arrays;
 
 enum TaskID {
   TASK_WRAPPER_ID,
@@ -45,6 +46,35 @@ static inline PrivilegeMode getPrivilegeMode(jint jpriv)
   }
 }
 
+struct PointWithRank {
+  PointWithRank(unsigned rank) :
+    rank(rank)
+  {}
+  unsigned rank;
+};
+
+template<unsigned DIM>
+struct PointWithRankImpl : public PointWithRank {
+  PointWithRankImpl(int *coord) :
+    PointWithRank(DIM), point(coord)
+  {}
+  Point<DIM> point;
+};
+
+struct RectWithRank {
+  RectWithRank(unsigned rank) :
+    rank(rank)
+  {}
+  unsigned rank;
+};
+
+template<unsigned DIM>
+struct RectWithRankImpl : public RectWithRank {
+  RectWithRankImpl(Point<DIM> low, Point<DIM> high) :
+    RectWithRank(DIM), rect(low, high)
+  {}
+  Rect<DIM> rect;
+};
 
 /*
  *
@@ -159,6 +189,20 @@ class IndexAllocatorJni : public LegionNativeClass<IndexAllocator*, IndexAllocat
  public:
   static jclass getJClass(JNIEnv *env) {
     return LegionNativeClass::getJClass(env, "org/legion/IndexAllocator");
+  }
+};
+
+class PointJni : public LegionNativeClass<PointWithRank*, PointJni> {
+ public:
+  static jclass getJClass(JNIEnv *env) {
+    return LegionNativeClass::getJClass(env, "org/legion/Point");
+  }
+};
+
+class RectJni : public LegionNativeClass<RectWithRank*, RectJni> {
+ public:
+  static jclass getJClass(JNIEnv *env) {
+    return LegionNativeClass::getJClass(env, "org/legion/Rect");
   }
 };
 

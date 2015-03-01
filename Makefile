@@ -23,6 +23,8 @@ NATIVE_JAVA_CLASSES = \
 	org.legion.PhysicalRegion \
 	org.legion.IndexAllocator \
 	org.legion.Pointer \
+	org.legion.Point \
+	org.legion.Rect \
 	org.legion.TaskLauncher
 
 NATIVE_INCLUDE = ./include
@@ -38,6 +40,8 @@ GEN_SRC		:= native/runtime.cc \
 			   native/field_allocator.cc \
 			   native/index_space.cc \
 			   native/field_space.cc \
+			   native/point.cc \
+			   native/rect.cc \
 			   native/index_allocator.cc
 GEN_GPU_SRC	:=
 
