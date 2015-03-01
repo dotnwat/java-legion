@@ -169,6 +169,16 @@ public class Runtime {
     return new IndexPartition(ipHandle);
   }
 
+  /**
+   *
+   */
+  public LogicalPartition getLogicalPartition(Context ctx, LogicalRegion parent,
+      IndexPartition partition) {
+    long lpHandle = getLogicalPartition(handle, ctx.handle, parent.nativeHandle,
+        partition.nativeHandle);
+    return new LogicalPartition(lpHandle);
+  }
+
   private native long executeTask(long rt, long ctx, long launcher);
   private native long createIndexSpace(long rt, long ctx, long max_elems);
   private native long createFieldSpace(long rt, long ctx);
@@ -178,4 +188,5 @@ public class Runtime {
   private native long createIndexAllocator(long rt, long ctx, long is);
   private native long createIndexPartition(long rt, long ctx, long is,
       long domain, long colorDomain, boolean disjoint);
+  private native long getLogicalPartition(long rt, long ctx, long lr, long ip);
 }

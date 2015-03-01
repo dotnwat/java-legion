@@ -263,8 +263,7 @@ JNIEXPORT jlong JNICALL Java_org_legion_Runtime_mapRegion
   PhysicalRegion *pr = new PhysicalRegion;
   *pr = runtime->map_region(ctx, *il);
 
-  return reinterpret_cast<jlong>(pr);
-}
+  return reinterpret_cast<jlong>(pr); }
 
 /*
  * Class:     org_legion_Runtime
@@ -303,4 +302,23 @@ JNIEXPORT jlong JNICALL Java_org_legion_Runtime_createIndexPartition
   *ip = runtime->create_index_partition(ctx, *is, *d, *dc, jdisjoint);
 
   return reinterpret_cast<jlong>(ip);
+}
+
+/*
+ * Class:     org_legion_Runtime
+ * Method:    getLogicalPartition
+ * Signature: (JJJJ)J
+ */
+JNIEXPORT jlong JNICALL Java_org_legion_Runtime_getLogicalPartition
+  (JNIEnv *env, jobject jobj, jlong jrt, jlong jctx, jlong jlr, jlong jip)
+{
+  HighLevelRuntime *runtime = reinterpret_cast<HighLevelRuntime*>(jrt);
+  Context ctx = reinterpret_cast<Context>(jctx);
+  LogicalRegion *lr = reinterpret_cast<LogicalRegion*>(jlr);
+  IndexPartition *ip = reinterpret_cast<IndexPartition*>(jip);
+
+  LogicalPartition *lp = new LogicalPartition;
+  *lp = runtime->get_logical_partition(ctx, *lr, *ip);
+
+  return reinterpret_cast<jlong>(lp);
 }

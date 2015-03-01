@@ -227,6 +227,13 @@ class IndexPartitionJni : public LegionNativeClass<IndexPartition*, IndexPartiti
   }
 };
 
+class LogicalPartitionJni : public LegionNativeClass<LogicalPartition*, LogicalPartitionJni> {
+ public:
+  static jclass getJClass(JNIEnv *env) {
+    return LegionNativeClass::getJClass(env, "org/legion/LogicalPartition");
+  }
+};
+
 //class XJni : public LegionNativeClass<X*, XJni> {
 // public:
 //  static jclass getJClass(JNIEnv *env) {

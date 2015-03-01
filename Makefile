@@ -28,6 +28,7 @@ NATIVE_JAVA_CLASSES = \
 	org.legion.Domain \
 	org.legion.DomainColoring \
 	org.legion.IndexPartition \
+	org.legion.LogicalPartition \
 	org.legion.TaskLauncher
 
 NATIVE_INCLUDE = ./include
@@ -48,6 +49,7 @@ GEN_SRC		:= native/runtime.cc \
 			   native/domain.cc \
 			   native/domain_coloring.cc \
 			   native/index_partition.cc \
+			   native/logical_partition.cc \
 			   native/index_allocator.cc
 GEN_GPU_SRC	:=
 
