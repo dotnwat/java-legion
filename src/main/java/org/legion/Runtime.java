@@ -120,6 +120,15 @@ public class Runtime {
   /**
    *
    */
+  public IndexSpace createIndexSpace(Context ctx, Domain domain) {
+    long isHandle = createIndexSpaceFromDomain(handle, ctx.handle,
+        domain.nativeHandle);
+    return new IndexSpace(isHandle);
+  }
+
+  /**
+   *
+   */
   public FieldSpace createFieldSpace(Context ctx) {
     long fsHandle = createFieldSpace(handle, ctx.handle);
     return new FieldSpace(fsHandle);
@@ -181,6 +190,7 @@ public class Runtime {
 
   private native long executeTask(long rt, long ctx, long launcher);
   private native long createIndexSpace(long rt, long ctx, long max_elems);
+  private native long createIndexSpaceFromDomain(long rt, long ctx, long domain);
   private native long createFieldSpace(long rt, long ctx);
   private native long createFieldAllocator(long rt, long ctx, long fs);
   private native long createLogicalRegion(long rt, long ctx, long is, long fs);

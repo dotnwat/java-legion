@@ -196,6 +196,24 @@ jlong Java_org_legion_Runtime_createIndexSpace(JNIEnv *env,
 
 /*
  * Class:     org_legion_Runtime
+ * Method:    createIndexSpaceFromDomain
+ * Signature: (JJJ)J
+ */
+JNIEXPORT jlong JNICALL Java_org_legion_Runtime_createIndexSpaceFromDomain
+    (JNIEnv *env, jobject jobj, jlong jrt, jlong jctx, jlong jdomain)
+{
+  HighLevelRuntime *runtime = reinterpret_cast<HighLevelRuntime*>(jrt);
+  Context ctx = reinterpret_cast<Context>(jctx);
+  Domain *domain = reinterpret_cast<Domain*>(jdomain);
+
+  IndexSpace *is = new IndexSpace;
+  *is = runtime->create_index_space(ctx, *domain);
+
+  return reinterpret_cast<jlong>(is);
+}
+
+/*
+ * Class:     org_legion_Runtime
  * Method:    createFieldSpace
  * Signature: (JJ)J
  */
