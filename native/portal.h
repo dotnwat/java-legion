@@ -213,6 +213,13 @@ class DomainJni : public LegionNativeClass<Domain*, DomainJni> {
   }
 };
 
+class DomainColoringJni : public LegionNativeClass<DomainColoring*, DomainColoringJni> {
+ public:
+  static jclass getJClass(JNIEnv *env) {
+    return LegionNativeClass::getJClass(env, "org/legion/DomainColoring");
+  }
+};
+
 //class XJni : public LegionNativeClass<X*, XJni> {
 // public:
 //  static jclass getJClass(JNIEnv *env) {
