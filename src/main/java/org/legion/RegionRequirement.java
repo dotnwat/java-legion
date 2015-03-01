@@ -18,6 +18,16 @@ public class RegionRequirement extends LegionObject {
   /**
    *
    */
+  public RegionRequirement(final LogicalPartition partition,
+      final int projectionId, final PrivilegeMode priv,
+      final CoherenceProperty coherence, final LogicalRegion parent) {
+    newRegionRequirement(partition.nativeHandle, projectionId, priv.getValue(),
+        coherence.getValue(), parent.nativeHandle);
+  }
+
+  /**
+   *
+   */
   public void addField(int fid) {
     addField(fid, true);
   }
@@ -39,6 +49,9 @@ public class RegionRequirement extends LegionObject {
 
   private native void newRegionRequirement(long region, long priv,
       long coherence, long parent);
+
+  private native void newRegionRequirement(long partition, int projectionId,
+      long priv, long coherence, long parent);
 
   private native void setRegion(long handle, long regionHandle);
   private native void setParent(long handle, long regionHandle);

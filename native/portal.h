@@ -116,6 +116,13 @@ class TaskLauncherWrapper {
   char *arg_data;
 };
 
+struct IndexLauncherWrapper {
+  IndexLauncher launcher;
+  int task_id;
+  size_t arg_size;
+  char *arg_data;
+};
+
 struct TaskArgumentWrapper {
   int task_id;
   size_t size;
@@ -231,6 +238,20 @@ class LogicalPartitionJni : public LegionNativeClass<LogicalPartition*, LogicalP
  public:
   static jclass getJClass(JNIEnv *env) {
     return LegionNativeClass::getJClass(env, "org/legion/LogicalPartition");
+  }
+};
+
+class ArgumentMapJni : public LegionNativeClass<ArgumentMap*, ArgumentMapJni> {
+ public:
+  static jclass getJClass(JNIEnv *env) {
+    return LegionNativeClass::getJClass(env, "org/legion/ArgumentMap");
+  }
+};
+
+class IndexLauncherJni : public LegionNativeClass<IndexLauncherWrapper*, IndexLauncherJni> {
+ public:
+  static jclass getJClass(JNIEnv *env) {
+    return LegionNativeClass::getJClass(env, "org/legion/IndexLauncher");
   }
 };
 

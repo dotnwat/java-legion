@@ -24,11 +24,29 @@ JNIEXPORT void JNICALL Java_org_legion_RegionRequirement_disposeInternal
  * Method:    newRegionRequirement
  * Signature: (JJJJ)V
  */
-JNIEXPORT void JNICALL Java_org_legion_RegionRequirement_newRegionRequirement
+JNIEXPORT void JNICALL Java_org_legion_RegionRequirement_newRegionRequirement__JJJJ
   (JNIEnv *env, jobject jobj, jlong jregion, jlong jpriv, jlong jcoherence, jlong jparent)
 {
   RegionRequirement *req = new RegionRequirement(
       *reinterpret_cast<LogicalRegion*>(jregion),
+      getPrivilegeMode(jpriv),
+      getCoherenceProperty(jcoherence),
+      *reinterpret_cast<LogicalRegion*>(jparent));
+  RegionRequirementJni::setHandle(env, jobj, req);
+}
+
+/*
+ * Class:     org_legion_RegionRequirement
+ * Method:    newRegionRequirement
+ * Signature: (JIJJJ)V
+ */
+JNIEXPORT void JNICALL Java_org_legion_RegionRequirement_newRegionRequirement__JIJJJ
+  (JNIEnv *env, jobject jobj, jlong jpartition, jint jprojectionId, jlong jpriv,
+   jlong jcoherence, jlong jparent)
+{
+  RegionRequirement *req = new RegionRequirement(
+      *reinterpret_cast<LogicalPartition*>(jpartition),
+      jprojectionId,
       getPrivilegeMode(jpriv),
       getCoherenceProperty(jcoherence),
       *reinterpret_cast<LogicalRegion*>(jparent));
