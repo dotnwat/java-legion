@@ -255,6 +255,13 @@ class IndexLauncherJni : public LegionNativeClass<IndexLauncherWrapper*, IndexLa
   }
 };
 
+class FutureMapJni : public LegionNativeClass<FutureMap*, FutureMapJni> {
+ public:
+  static jclass getJClass(JNIEnv *env) {
+    return LegionNativeClass::getJClass(env, "org/legion/FutureMap");
+  }
+};
+
 //class XJni : public LegionNativeClass<X*, XJni> {
 // public:
 //  static jclass getJClass(JNIEnv *env) {

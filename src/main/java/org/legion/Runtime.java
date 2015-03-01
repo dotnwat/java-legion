@@ -112,6 +112,14 @@ public class Runtime {
   /**
    *
    */
+  public FutureMap executeIndexSpace(Context ctx, IndexLauncher launcher) {
+    long fmHandle = executeIndexSpace(handle, ctx.handle, launcher.nativeHandle);
+    return new FutureMap(fmHandle);
+  }
+
+  /**
+   *
+   */
   public IndexSpace createIndexSpace(Context ctx, long max_elems) {
     long isHandle = createIndexSpace(handle, ctx.handle, max_elems);
     return new IndexSpace(isHandle);
@@ -189,6 +197,7 @@ public class Runtime {
   }
 
   private native long executeTask(long rt, long ctx, long launcher);
+  private native long executeIndexSpace(long rt, long ctx, long launcher);
   private native long createIndexSpace(long rt, long ctx, long max_elems);
   private native long createIndexSpaceFromDomain(long rt, long ctx, long domain);
   private native long createFieldSpace(long rt, long ctx);

@@ -127,6 +127,34 @@ jlong Java_org_legion_Runtime_executeTask(JNIEnv *env, jobject jobj,
   return reinterpret_cast<jlong>(result);
 }
 
+/*
+ * Class:     org_legion_Runtime
+ * Method:    executeIndexSpace
+ * Signature: (JJJ)J
+ */
+JNIEXPORT jlong JNICALL Java_org_legion_Runtime_executeIndexSpace(
+    JNIEnv *env, jobject jobj, jlong jrt, jlong jctx, jlong jlauncher)
+{
+  HighLevelRuntime *runtime = reinterpret_cast<HighLevelRuntime*>(jrt);
+  Context ctx = reinterpret_cast<Context>(jctx);
+  IndexLauncherWrapper *launcher = reinterpret_cast<IndexLauncherWrapper*>(jlauncher);
+
+  // so much memory leak terriblenss
+  TaskArgumentWrapper *task_args =
+    (TaskArgumentWrapper*)malloc(sizeof(*task_args) + launcher->arg_size);
+  task_args->task_id = launcher->task_id;
+  task_args->size = launcher->arg_size;
+  memcpy(&task_args->data[0], launcher->arg_data, task_args->size);
+
+  launcher->launcher.global_arg = TaskArgument(task_args,
+      sizeof(*task_args) + launcher->arg_size);
+
+  FutureMap *result = new FutureMap;
+  *result = runtime->execute_index_space(ctx, launcher->launcher);
+
+  return reinterpret_cast<jlong>(result);
+}
+
 void Java_org_legion_Runtime_start(JNIEnv *env, jclass jrt, jobjectArray jargs)
 {
   const unsigned argc = env->GetArrayLength(jargs);

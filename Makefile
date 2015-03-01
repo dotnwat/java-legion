@@ -31,7 +31,8 @@ NATIVE_JAVA_CLASSES = \
 	org.legion.LogicalPartition \
 	org.legion.ArgumentMap \
 	org.legion.TaskLauncher \
-	org.legion.IndexLauncher
+	org.legion.IndexLauncher \
+	org.legion.FutureMap
 
 NATIVE_INCLUDE = ./include
 
@@ -54,7 +55,8 @@ GEN_SRC		:= native/runtime.cc \
 			   native/logical_partition.cc \
 			   native/argument_map.cc \
 			   native/index_allocator.cc \
-			   native/index_launcher.cc
+			   native/index_launcher.cc \
+			   native/future_map.cc
 GEN_GPU_SRC	:=
 
 CC_FLAGS	:= -fPIC
