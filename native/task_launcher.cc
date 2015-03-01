@@ -50,6 +50,7 @@ void Java_org_legion_TaskLauncher_setTaskArg(JNIEnv *env, jobject jobj,
 {
   TaskLauncherWrapper *l = reinterpret_cast<TaskLauncherWrapper*>(jhandle);
 
+  assert(jarg); // FIXME: set size/data=0/null and check during arg packaging
   jsize nelms = env->GetArrayLength(jarg);
   l->arg_data = new char[nelms]; // FIXME; memory leak never freed
   jbyte *data = env->GetByteArrayElements(jarg, NULL);
