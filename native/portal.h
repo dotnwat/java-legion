@@ -220,6 +220,13 @@ class DomainColoringJni : public LegionNativeClass<DomainColoring*, DomainColori
   }
 };
 
+class IndexPartitionJni : public LegionNativeClass<IndexPartition*, IndexPartitionJni> {
+ public:
+  static jclass getJClass(JNIEnv *env) {
+    return LegionNativeClass::getJClass(env, "org/legion/IndexPartition");
+  }
+};
+
 //class XJni : public LegionNativeClass<X*, XJni> {
 // public:
 //  static jclass getJClass(JNIEnv *env) {

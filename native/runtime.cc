@@ -283,3 +283,24 @@ JNIEXPORT jlong JNICALL Java_org_legion_Runtime_createIndexAllocator
 
   return reinterpret_cast<jlong>(ia);
 }
+
+/*
+ * Class:     org_legion_Runtime
+ * Method:    createIndexPartition
+ * Signature: (JJJJJZ)J
+ */
+JNIEXPORT jlong JNICALL Java_org_legion_Runtime_createIndexPartition
+  (JNIEnv *env, jobject jobj, jlong jrt, jlong jctx, jlong jis,
+   jlong jdomain, jlong jdomaincoloring, jboolean jdisjoint)
+{
+  HighLevelRuntime *runtime = reinterpret_cast<HighLevelRuntime*>(jrt);
+  Context ctx = reinterpret_cast<Context>(jctx);
+  IndexSpace *is = reinterpret_cast<IndexSpace*>(jis);
+  Domain *d = reinterpret_cast<Domain*>(jdomain);
+  DomainColoring *dc = reinterpret_cast<DomainColoring*>(jdomaincoloring);
+
+  IndexPartition *ip = new IndexPartition;
+  *ip = runtime->create_index_partition(ctx, *is, *d, *dc, jdisjoint);
+
+  return reinterpret_cast<jlong>(ip);
+}

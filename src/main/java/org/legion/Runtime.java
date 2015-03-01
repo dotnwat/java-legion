@@ -159,6 +159,16 @@ public class Runtime {
     return new IndexAllocator(iaHandle);
   }
 
+  /**
+   *
+   */
+  public IndexPartition createIndexPartition(Context ctx, IndexSpace is,
+      Domain domain, DomainColoring coloring, boolean disjoint) {
+    long ipHandle = createIndexPartition(handle, ctx.handle, is.nativeHandle,
+        domain.nativeHandle, coloring.nativeHandle, disjoint);
+    return new IndexPartition(ipHandle);
+  }
+
   private native long executeTask(long rt, long ctx, long launcher);
   private native long createIndexSpace(long rt, long ctx, long max_elems);
   private native long createFieldSpace(long rt, long ctx);
@@ -166,4 +176,6 @@ public class Runtime {
   private native long createLogicalRegion(long rt, long ctx, long is, long fs);
   private native long mapRegion(long rt, long ctx, long launcher);
   private native long createIndexAllocator(long rt, long ctx, long is);
+  private native long createIndexPartition(long rt, long ctx, long is,
+      long domain, long colorDomain, boolean disjoint);
 }
