@@ -206,6 +206,13 @@ class RectJni : public LegionNativeClass<RectWithRank*, RectJni> {
   }
 };
 
+class DomainJni : public LegionNativeClass<Domain*, DomainJni> {
+ public:
+  static jclass getJClass(JNIEnv *env) {
+    return LegionNativeClass::getJClass(env, "org/legion/Domain");
+  }
+};
+
 //class XJni : public LegionNativeClass<X*, XJni> {
 // public:
 //  static jclass getJClass(JNIEnv *env) {

@@ -25,6 +25,7 @@ NATIVE_JAVA_CLASSES = \
 	org.legion.Pointer \
 	org.legion.Point \
 	org.legion.Rect \
+	org.legion.Domain \
 	org.legion.TaskLauncher
 
 NATIVE_INCLUDE = ./include
@@ -42,6 +43,7 @@ GEN_SRC		:= native/runtime.cc \
 			   native/field_space.cc \
 			   native/point.cc \
 			   native/rect.cc \
+			   native/domain.cc \
 			   native/index_allocator.cc
 GEN_GPU_SRC	:=
 
