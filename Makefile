@@ -171,3 +171,7 @@ jar: java all
 hello: jar
 	javac -cp target/$(LEGION_JAR) LegionHelloWorld.java
 	java -cp target/$(LEGION_JAR):. -Xcheck:jni LegionHelloWorld
+
+daxby: jar
+	javac -cp target/$(LEGION_JAR) DaxbyExample.java
+	java -cp target/$(LEGION_JAR):. -Xcheck:jni DaxbyExample
