@@ -2,6 +2,7 @@ package org.legion;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.ArrayList;
 
 /**
  *
@@ -54,6 +55,12 @@ public class Runtime {
     Runtime rt = new Runtime(rtp);
     Task t = new Task(taskp);
 
+    // plain array?
+    ArrayList<PhysicalRegion> regions = new ArrayList<PhysicalRegion>(regionp.length);
+    for (long prHandle : regionp) {
+      regions.add(new PhysicalRegion(prHandle));
+    }
+
     TaskFunction func;
     synchronized(Runtime.class) {
       func = tasks.get(top_level_task_id);
@@ -62,7 +69,7 @@ public class Runtime {
     if (func == null)
       throw new NullPointerException();
 
-    func.task(t, ctx, rt);
+    func.task(t, regions, ctx, rt);
   }
 
   /**
@@ -75,6 +82,12 @@ public class Runtime {
     Runtime rt = new Runtime(rtp);
     Task t = new Task(taskp);
 
+    // plain array?
+    ArrayList<PhysicalRegion> regions = new ArrayList<PhysicalRegion>(regionp.length);
+    for (long prHandle : regionp) {
+      regions.add(new PhysicalRegion(prHandle));
+    }
+
     TaskFunction func;
     synchronized(Runtime.class) {
       func = tasks.get(task_id);
@@ -83,7 +96,7 @@ public class Runtime {
     if (func == null)
       throw new NullPointerException();
 
-    func.task(t, ctx, rt);
+    func.task(t, regions, ctx, rt);
   }
 
   /**
