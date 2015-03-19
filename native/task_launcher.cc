@@ -58,3 +58,16 @@ void Java_org_legion_TaskLauncher_setTaskArg(JNIEnv *env, jobject jobj,
   l->arg_size = static_cast<size_t>(nelms);
   env->ReleaseByteArrayElements(jarg, data, JNI_ABORT);
 }
+
+/*
+ * Class:     org_legion_TaskLauncher
+ * Method:    addRegionRequirement
+ * Signature: (JJ)V
+ */
+JNIEXPORT void JNICALL Java_org_legion_TaskLauncher_addRegionRequirement
+  (JNIEnv *env, jobject jobj, jlong jhandle, jlong jrr)
+{
+  TaskLauncherWrapper *tl = reinterpret_cast<TaskLauncherWrapper*>(jhandle);
+  RegionRequirement *rr = reinterpret_cast<RegionRequirement*>(jrr);
+  tl->launcher.add_region_requirement(*rr);
+}
