@@ -1,4 +1,5 @@
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import org.legion.Runtime;
 import org.legion.*;
 
@@ -7,9 +8,10 @@ public class DaxbyExample {
   static final int TOP_TASK_ID   = 1;
   static final int DAXBY_TASK_ID = 2;
   static final int INIT_FIELD_TASK_ID = 3;
+  static final int CHECK_TASK_ID = 4;
 
   static class TopLevelTask implements TaskFunction {
-    public void task(Task task, Context ctx, Runtime rt) {
+    public void task(Task task, ArrayList<PhysicalRegion> regions, Context ctx, Runtime rt) {
       int num_elements = 1024;
       int num_subregions = 4;
 
@@ -63,7 +65,7 @@ public class DaxbyExample {
       RegionRequirement y_req = new RegionRequirement(input_lp, 0,
           PrivilegeMode.WRITE_DISCARD, CoherenceProperty.EXCLUSIVE, input_lr);
       y_req.addField(2);
-      init_y_launcher.addRegionRequirement(x_req); // makes copy of req
+      init_y_launcher.addRegionRequirement(y_req); // makes copy of req
       rt.executeIndexSpace(ctx, init_y_launcher);
 
       double alpha = 0.5;
@@ -78,7 +80,23 @@ public class DaxbyExample {
       RegionRequirement output_daxby_req = new RegionRequirement(output_lp, 0,
           PrivilegeMode.WRITE_DISCARD, CoherenceProperty.EXCLUSIVE, output_lr);
       output_daxby_req.addField(3);
+      daxby_launcher.addRegionRequirement(output_daxby_req);
       rt.executeIndexSpace(ctx, daxby_launcher);
+
+      TaskLauncher check_launcher = new TaskLauncher(CHECK_TASK_ID, toByteArray(alpha));
+
+      RegionRequirement check_input_req = new RegionRequirement(input_lr,
+          PrivilegeMode.READ_ONLY, CoherenceProperty.EXCLUSIVE, input_lr);
+      check_input_req.addField(1);
+      check_input_req.addField(2);
+      check_launcher.addRegionRequirement(check_input_req);
+
+      RegionRequirement check_output_req = new RegionRequirement(output_lr,
+          PrivilegeMode.READ_ONLY, CoherenceProperty.EXCLUSIVE, output_lr);
+      check_output_req.addField(3);
+      check_launcher.addRegionRequirement(check_output_req);
+
+      rt.executeTask(ctx, check_launcher);
     }
   }
 
@@ -93,14 +111,23 @@ public class DaxbyExample {
   }
 
   static class InitFieldTask implements TaskFunction {
-    public void task(Task task, Context ctx, Runtime rt) {
+    public void task(Task task, ArrayList<PhysicalRegion> regions, Context ctx, Runtime rt) {
+      assert regions.size() == 1;
       System.out.println("hello from init field task");
     }
   }
 
   static class DaxbyTask implements TaskFunction {
-    public void task(Task task, Context ctx, Runtime rt) {
+    public void task(Task task, ArrayList<PhysicalRegion> regions, Context ctx, Runtime rt) {
+      assert regions.size() == 2;
       System.out.println("hello from daxby task");
+    }
+  }
+
+  static class CheckTask implements TaskFunction {
+    public void task(Task task, ArrayList<PhysicalRegion> regions, Context ctx, Runtime rt) {
+      assert regions.size() == 2;
+      System.out.println("hello from check task");
     }
   }
 
@@ -109,6 +136,7 @@ public class DaxbyExample {
     Runtime.register_task(TOP_TASK_ID, new TopLevelTask());
     Runtime.register_task(DAXBY_TASK_ID, new DaxbyTask());
     Runtime.register_task(INIT_FIELD_TASK_ID, new InitFieldTask());
+    Runtime.register_task(CHECK_TASK_ID, new CheckTask());
 
     Runtime.set_top_level_task_id(TOP_TASK_ID);
     Runtime.start(args);
