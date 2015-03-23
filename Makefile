@@ -56,7 +56,8 @@ GEN_SRC		:= native/runtime.cc \
 			   native/argument_map.cc \
 			   native/index_allocator.cc \
 			   native/index_launcher.cc \
-			   native/future_map.cc
+			   native/future_map.cc \
+			   native/task.cc
 GEN_GPU_SRC	:=
 
 CC_FLAGS	:= -fPIC

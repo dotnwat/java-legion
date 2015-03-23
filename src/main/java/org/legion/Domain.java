@@ -2,6 +2,10 @@ package org.legion;
 
 public class Domain extends LegionObject {
 
+  Domain(long handle) {
+    nativeHandle = handle;
+  }
+
   public Domain(Rect rect) {
     long dHandle = newDomainFromRect(rect.nativeHandle);
     nativeHandle = dHandle;

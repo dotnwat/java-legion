@@ -116,3 +116,15 @@ JNIEXPORT void JNICALL Java_org_legion_RegionRequirement_addField
       static_cast<FieldID>(jfid),
       static_cast<bool>(jinstance));
 }
+
+/*
+ * Class:     org_legion_RegionRequirement
+ * Method:    getLogicalRegion
+ * Signature: (J)J
+ */
+JNIEXPORT jlong JNICALL Java_org_legion_RegionRequirement_getLogicalRegion
+  (JNIEnv *env, jobject jobj, jlong jhandle)
+{
+  RegionRequirement *req = reinterpret_cast<RegionRequirement*>(jhandle);
+  return reinterpret_cast<jlong>(&req->region);
+}

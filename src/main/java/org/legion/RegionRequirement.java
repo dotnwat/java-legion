@@ -8,6 +8,14 @@ public class RegionRequirement extends LegionObject {
   /**
    *
    */
+  RegionRequirement(long handle) {
+    nativeHandle = handle;
+    owningHandle = false;
+  }
+
+  /**
+   *
+   */
   public RegionRequirement(final LogicalRegion region,
       final PrivilegeMode priv, final CoherenceProperty coherence,
       final LogicalRegion parent) {
@@ -39,6 +47,14 @@ public class RegionRequirement extends LegionObject {
     addField(nativeHandle, fid, instance);
   }
 
+  /*
+   *
+   */
+  public LogicalRegion getLogicalRegion() {
+    long lrHandle = getLogicalRegion(nativeHandle);
+    return new LogicalRegion(lrHandle);
+  }
+
   @Override
   protected void disposeInternal() {
     assert(isInitialized());
@@ -58,4 +74,5 @@ public class RegionRequirement extends LegionObject {
   private native void setPrivilege(long handle, int priv);
   private native void setCoherence(long handle, int coherence);
   private native void addField(long handle, int fid, boolean instance);
+  private native long getLogicalRegion(long handle);
 }

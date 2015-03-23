@@ -3,7 +3,6 @@
 #include <legion.h>
 
 #include "include/org_legion_Runtime.h"
-#include "include/org_legion_Task.h"
 #include "portal.h"
 
 using namespace LegionRuntime::HighLevel;
@@ -189,23 +188,6 @@ void Java_org_legion_Runtime_start(JNIEnv *env, jclass jrt, jobjectArray jargs)
 }
 
 /*
- * Class:     org_legion_Task
- * Method:    getArgs
- * Signature: (J)[B
- */
-jbyteArray Java_org_legion_Task_getArgs(JNIEnv *env, jobject jobj, jlong jhandle)
-{
-  const Task *task = reinterpret_cast<const Task*>(jhandle);
-
-  TaskArgumentWrapper *args = (TaskArgumentWrapper*)task->args;
-
-  jbyteArray ret = env->NewByteArray(args->size);
-  env->SetByteArrayRegion(ret, 0, args->size, (const jbyte*)args->data);
-
-  return ret;
-}
-
-/*
  * Class:     org_legion_Runtime
  * Method:    createIndexSpace
  * Signature: (JJJ)J
@@ -367,4 +349,22 @@ JNIEXPORT jlong JNICALL Java_org_legion_Runtime_getLogicalPartition
   *lp = runtime->get_logical_partition(ctx, *lr, *ip);
 
   return reinterpret_cast<jlong>(lp);
+}
+
+/*
+ * Class:     org_legion_Runtime
+ * Method:    getIndexSpaceDomain
+ * Signature: (JJJ)J
+ */
+JNIEXPORT jlong JNICALL Java_org_legion_Runtime_getIndexSpaceDomain
+  (JNIEnv *env, jobject jobj, jlong jrt, jlong jctx, jlong jis)
+{
+  HighLevelRuntime *runtime = reinterpret_cast<HighLevelRuntime*>(jrt);
+  Context ctx = reinterpret_cast<Context>(jctx);
+  IndexSpace *is = reinterpret_cast<IndexSpace*>(jis);
+
+  Domain *d = new Domain;
+  *d = runtime->get_index_space_domain(ctx, *is);
+
+  return reinterpret_cast<jlong>(d);
 }

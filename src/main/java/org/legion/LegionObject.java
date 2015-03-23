@@ -3,7 +3,7 @@ package org.legion;
 public abstract class LegionObject {
 
   protected long nativeHandle;
-  private boolean owningHandle;
+  protected boolean owningHandle;
 
   protected LegionObject() {
     nativeHandle = 0;

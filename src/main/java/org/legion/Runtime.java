@@ -209,6 +209,14 @@ public class Runtime {
     return new LogicalPartition(lpHandle);
   }
 
+  /**
+   *
+   */
+  public Domain getIndexSpaceDomain(Context ctx, IndexSpace is) {
+    long dHandle = getIndexSpaceDomain(handle, ctx.handle, is.nativeHandle);
+    return new Domain(dHandle);
+  }
+
   private native long executeTask(long rt, long ctx, long launcher);
   private native long executeIndexSpace(long rt, long ctx, long launcher);
   private native long createIndexSpace(long rt, long ctx, long max_elems);
@@ -221,4 +229,5 @@ public class Runtime {
   private native long createIndexPartition(long rt, long ctx, long is,
       long domain, long colorDomain, boolean disjoint);
   private native long getLogicalPartition(long rt, long ctx, long lr, long ip);
+  private native long getIndexSpaceDomain(long rt, long ctx, long is);
 }

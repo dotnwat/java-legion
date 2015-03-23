@@ -114,6 +114,9 @@ public class DaxbyExample {
     public void task(Task task, ArrayList<PhysicalRegion> regions, Context ctx, Runtime rt) {
       assert regions.size() == 1;
       System.out.println("hello from init field task");
+
+      Domain dom = rt.getIndexSpaceDomain(ctx,
+          task.getRegionRequirement(0).getLogicalRegion().getIndexSpace());
     }
   }
 
@@ -121,6 +124,9 @@ public class DaxbyExample {
     public void task(Task task, ArrayList<PhysicalRegion> regions, Context ctx, Runtime rt) {
       assert regions.size() == 2;
       System.out.println("hello from daxby task");
+
+      Domain dom = rt.getIndexSpaceDomain(ctx,
+          task.getRegionRequirement(0).getLogicalRegion().getIndexSpace());
     }
   }
 
@@ -128,6 +134,9 @@ public class DaxbyExample {
     public void task(Task task, ArrayList<PhysicalRegion> regions, Context ctx, Runtime rt) {
       assert regions.size() == 2;
       System.out.println("hello from check task");
+
+      Domain dom = rt.getIndexSpaceDomain(ctx,
+          task.getRegionRequirement(0).getLogicalRegion().getIndexSpace());
     }
   }
 
