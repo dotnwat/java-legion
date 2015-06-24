@@ -1,5 +1,7 @@
 # java-legion - Java bindings to Legion
 
+This code is a very alpha proof-of-concept.
+
 # Examples
 
 * [Hello World](#hello-world)
