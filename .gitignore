@@ -3,3 +3,8 @@ include
 native/*.o
 *.class
 */**.class
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+*.jnilib
