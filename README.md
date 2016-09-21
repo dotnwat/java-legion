@@ -1,6 +1,11 @@
 # java-legion - Java bindings to Legion
 
-This code is a very alpha proof-of-concept.
+# Building
+
+```bash
+cmake -DLegion_DIR=/path/to/lib/cmake/Legion .
+make
+```
 
 # Examples
 
