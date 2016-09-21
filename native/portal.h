@@ -2,6 +2,7 @@
 #define PORTAL_H
 
 #include <legion.h>
+using namespace Legion;
 using namespace LegionRuntime::HighLevel;
 using namespace LegionRuntime::Arrays;
 
@@ -56,7 +57,7 @@ struct PointWithRank {
 template<unsigned DIM>
 struct PointWithRankImpl : public PointWithRank {
   PointWithRankImpl(int *coord) :
-    PointWithRank(DIM), point(coord)
+    PointWithRank(DIM), point((coord_t*)coord)
   {}
   Point<DIM> point;
 };
