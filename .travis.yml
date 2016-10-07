@@ -1,0 +1,10 @@
+dist: trusty
+language: cpp
+
+matrix:
+  include:
+    - os: linux
+      compiler: gcc
+
+script:
+  - exit 0
