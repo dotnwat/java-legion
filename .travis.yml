@@ -6,5 +6,8 @@ matrix:
     - os: linux
       compiler: gcc
 
+before_install:
+  - ci/before_install.sh
+
 script:
   - exit 0
