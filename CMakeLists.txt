@@ -1,11 +1,11 @@
 cmake_minimum_required(VERSION 3.1)
 project(java-legion)
 
-find_package(Legion REQUIRED)
-
 find_package(Java COMPONENTS Development)
 find_package(JNI REQUIRED)
 include(UseJava)
+
+add_subdirectory(legion)
 
 set(JAVA_CLASSES
   org.legion.Runtime
@@ -72,20 +72,19 @@ add_library(legion_jni SHARED
 
 add_dependencies(legion_jni jni_headers)
 
-set_target_properties(legion_jni PROPERTIES LINK_FLAGS "-Wl,-U,_main")
-
 if(APPLE)
   set_target_properties(legion_jni PROPERTIES OUTPUT_NAME legionjni-osx)
   set_target_properties(legion_jni PROPERTIES SUFFIX .jnilib)
 endif(APPLE)
+
+set_target_properties(legion_jni PROPERTIES OUTPUT_NAME legionjni-linux64)
 
 target_include_directories(legion_jni
   PUBLIC ${CMAKE_CURRENT_BINARY_DIR}
   PUBLIC ${JNI_INCLUDE_DIRS})
 
 target_link_libraries(legion_jni
-  ${JNI_LIBRARIES}
-  Legion::Legion)
+  ${JNI_LIBRARIES} Legion)
 
 get_property(LegionJarFile TARGET legion_jar PROPERTY JAR_FILE)
 add_custom_command(TARGET legion_jni POST_BUILD

@@ -1,0 +1,4 @@
+[submodule "legion"]
+	path = legion
+	url = https://github.com/stanfordlegion/legion.git
+	branch = stable
