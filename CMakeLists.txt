@@ -5,7 +5,6 @@ find_package(Java COMPONENTS Development)
 find_package(JNI REQUIRED)
 include(UseJava)
 
-add_definitions(-DREALM_USE_NATIVE_THREADS)
 add_subdirectory(legion)
 
 set(JAVA_CLASSES

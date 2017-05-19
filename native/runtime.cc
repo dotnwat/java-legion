@@ -156,13 +156,16 @@ JNIEXPORT jlong JNICALL Java_org_legion_Runtime_executeIndexSpace(
 
 void Java_org_legion_Runtime_start(JNIEnv *env, jclass jrt, jobjectArray jargs)
 {
-  // add an extra for the executable name (argv[0])
-  const unsigned argc = env->GetArrayLength(jargs) + 1;
-
+  const unsigned argc = env->GetArrayLength(jargs) + 2;
   char **argv = new char*[argc];
-  argv[0] = strdup("<exec name>"); // TODO: how to extract name?
 
-  for (unsigned i = 1; i < argc; i++) {
+  // manually adding args:
+  //   - exec name
+  //   - force kthreads
+  argv[0] = strdup("<exec name>"); // TODO: how to extract name?
+  argv[1] = strdup("-ll:force_kthreads");
+
+  for (unsigned i = 3; i < argc; i++) {
     jstring jargv = static_cast<jstring>(env->GetObjectArrayElement(jargs, i));
     const char *jargvp = env->GetStringUTFChars(jargv, NULL);
     argv[i] = strdup(jargvp);
