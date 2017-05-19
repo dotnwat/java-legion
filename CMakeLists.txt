@@ -7,6 +7,8 @@ include(UseJava)
 
 add_subdirectory(legion)
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror -Wall -g")
+
 set(JAVA_CLASSES
   org.legion.Runtime
   org.legion.LegionObject

@@ -172,17 +172,18 @@ void Java_org_legion_Runtime_start(JNIEnv *env, jclass jrt, jobjectArray jargs)
     env->ReleaseStringUTFChars(jargv, jargvp);
   }
 
-  HighLevelRuntime::register_legion_task<task_wrapper>(
-      TASK_WRAPPER_ID,
-      Processor::LOC_PROC,
-      true,  // single
-      false); // index
+  TaskVariantRegistrar registrar1(TASK_WRAPPER_ID, "task_variant");
+  registrar1.add_constraint(ProcessorConstraint(Processor::LOC_PROC));
+  Runtime::preregister_task_variant<task_wrapper>(
+      registrar1,
+      "task_variant_wrapper");
 
-  HighLevelRuntime::register_legion_task<top_level_task_wrapper>(
-      TOP_LEVEL_TASK_WRAPPER_ID,
-      Processor::LOC_PROC,
-      true,  // single
-      false); // index
+  TaskVariantRegistrar registrar2(TOP_LEVEL_TASK_WRAPPER_ID,
+      "top_level_variant");
+  registrar2.add_constraint(ProcessorConstraint(Processor::LOC_PROC));
+  Runtime::preregister_task_variant<top_level_task_wrapper>(
+      registrar2,
+      "top_level_task");
 
   HighLevelRuntime::set_top_level_task_id(TOP_LEVEL_TASK_WRAPPER_ID);
 
