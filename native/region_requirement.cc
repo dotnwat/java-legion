@@ -5,7 +5,7 @@
 #include "include/org_legion_RegionRequirement.h"
 #include "portal.h"
 
-using namespace LegionRuntime::HighLevel;
+using namespace Legion;
 
 /*
  * Class:     org_legion_RegionRequirement

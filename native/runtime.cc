@@ -5,7 +5,7 @@
 #include "include/org_legion_Runtime.h"
 #include "portal.h"
 
-using namespace LegionRuntime::HighLevel;
+using namespace Legion;
 
 static JavaVM *jvm;
 
