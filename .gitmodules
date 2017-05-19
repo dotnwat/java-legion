@@ -1,4 +1,5 @@
 [submodule "legion"]
 	path = legion
-	url = https://github.com/stanfordlegion/legion.git
-	branch = stable
+	url = https://github.com/noahdesu/legion.git
+	branch = select-threading
+    ignore = untracked

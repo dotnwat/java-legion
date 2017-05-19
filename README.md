@@ -3,7 +3,8 @@
 # Building
 
 ```bash
-cmake -DLegion_DIR=/path/to/lib/cmake/Legion .
+git submodule update --init --recursive
+cmake .
 make
 ```
 
